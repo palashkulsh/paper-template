@@ -95,6 +95,7 @@
                 margin: 0,
                 filename: `landscape-${title}-4x4.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
+		// scrollY is addded because html2pdf was itself rendering away from page start
                 html2canvas: { scale: 1 , scrollY:0},
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
             };
