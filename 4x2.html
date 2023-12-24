@@ -78,7 +78,7 @@
                     const progressBar = document.createElement('div');
                     progressBar.className = 'progressBar';
                     const percentage = ((i + j) / (lines.length-1)) * 100;
-                    progressBar.style.width = `${(percentage )>0?percentage : 0}%`; // Adjust width
+                    progressBar.style.width = `${(percentage )>0 && percentage<101?percentage : 0}%`; // Adjust width
                     progressBarContainer.appendChild(progressBar);
                     cell.appendChild(progressBarContainer);
                     percentageLabel.textContent = `${percentage.toFixed(2)}%`;
