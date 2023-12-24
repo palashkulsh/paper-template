@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create PDF</title>
+    <script type="text/javascript" src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+</head>
+<body>
+
+    <input type="text" id="titleInput" placeholder="Enter a title">
+
+    <textarea id="inputTextarea" name="inputText" rows="8" cols="30" placeholder="Enter a string per line"></textarea>
+
+    <button onclick="generatePDF()">Generate PDF</button>
+
+    <div id="pdfContainer">
+        <!-- The table will be dynamically generated here -->
+    </div>
+
+    <script>
+        function generatePDF() {
+            const pdfContainer = document.getElementById('pdfContainer');
+
+            // Clear the previous content
+            pdfContainer.innerHTML = '';
+
+            // Get the title and input string from the input and textarea
+            const titleInput = document.getElementById('titleInput');
+            const inputTextarea = document.getElementById('inputTextarea');
+            const title = titleInput.value.trim();
+            let lines = inputTextarea.value.split('\n');
+	    lines.push(`${lines.length}/${lines.length} Completed. 🏆`)
+	    // remove empty lines
+	    lines = lines.filter((el)=>{
+		return el.trim() != ""
+	    })
+	    console.log(lines)
+            // Create a table and append it to the container
+            const table = document.createElement('table');
+            pdfContainer.appendChild(table);
+
+            // Iterate through each line and create table rows and cells
+            let rowIndex = 0;
+            for (let i = 0; i < lines.length; i += 2) {
+                const row = table.insertRow(rowIndex++);
+
+                for (let j = 0; j < 2; j++) {
+                    const cell = row.insertCell(j);
+                    cell.className = 'pdfCell';
+
+                    // Add title
+                    const titleLabel = document.createElement('div');
+                    titleLabel.className = 'titleLabel';
+                    titleLabel.textContent = title;
+                    cell.appendChild(titleLabel);
+
+                    // Add string per line
+                    const lineLabel = document.createElement('div');
+                    lineLabel.className = 'lineLabel';
+                    const line = lines[i + j] || '';
+                    lineLabel.textContent = line.trim();
+                    cell.appendChild(lineLabel);
+
+                    // Add current number/total count in the top right corner with padding
+                    const countLabel = document.createElement('div');
+                    countLabel.className = 'countLabel';
+                    countLabel.textContent = `${i + j }/${lines.length-1}`;
+                    cell.appendChild(countLabel);
+
+                    // Add percentage value with bordered progress bar
+                    const progressBarContainer = document.createElement('div');
+                    progressBarContainer.className = 'progressBarContainer';
+
+                    // Add percentage value
+                    const percentageLabel = document.createElement('div');
+                    percentageLabel.className = 'percentageLabel';
+                    const progressBar = document.createElement('div');
+                    progressBar.className = 'progressBar';
+                    const percentage = ((i + j) / (lines.length-1)) * 100;
+                    progressBar.style.width = `${(percentage )>0?percentage : 0}%`; // Adjust width
+                    progressBarContainer.appendChild(progressBar);
+                    cell.appendChild(progressBarContainer);
+                    percentageLabel.textContent = `${percentage.toFixed(2)}%`;
+                    cell.appendChild(percentageLabel);
+                }
+            }
+
+            // Options for html2pdf
+            const options = {
+                margin: 0,
+                filename: 'divided_page.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Use html2pdf to generate and download the PDF
+            html2pdf(table, options); // Pass 'table' instead of 'pdfContainer'
+        }
+    </script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        table {
+            width: 210mm; /* A4 width */
+            height: 297mm; /* A4 height divided by 4 rows */
+            border-collapse: collapse;
+        }
+
+        .pdfCell {
+            position: relative;
+            width: 50%;
+            height: 74.23mm; /* Adjust the height as needed */
+            border: 1px solid black;
+            text-align: left;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .titleLabel {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 1px;
+        }
+
+        .lineLabel {
+            font-size: 14px;
+        }
+
+        .countLabel, .percentageLabel {
+            position: absolute;
+            font-size: 12px;
+            color: #555;
+        }
+
+        .countLabel {
+            top: 25px;
+            right: 25px;
+        }
+
+        .progressBarContainer {
+            height: 20px; /* Increased height */
+            border: 1px solid #000;
+            position: absolute;
+            bottom: 34px; /* Adjusted bottom position */
+            left: 10px; /* Adjusted left position */
+            width: calc(100% - 20px); /* Adjusted width */
+        }
+
+        .progressBar {
+            height: 100%;
+            background-color: #4CAF50;
+        }
+
+        .percentageLabel {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #555;
+        }
+    </style>
+
+</body>
+</html>
