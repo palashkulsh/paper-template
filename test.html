@@ -31,6 +31,7 @@
             const title = titleInput.value.trim();
             const lines = inputTextarea.value.split('\n');
 
+	    lines.push("Completed.")
             // Create a table and append it to the container
             const table = document.createElement('table');
             pdfContainer.appendChild(table);
@@ -73,7 +74,7 @@
                     const progressBar = document.createElement('div');
                     progressBar.className = 'progressBar';
                     const percentage = ((i + j) / lines.length) * 100;
-                    progressBar.style.width = `${(percentage - 2)>0?percentage - 2 : 0}%`; // Adjust width
+				    progressBar.style.width = `${(percentage - 2)>0?percentage - 2 : 0}%`; // Adjust width
                     progressBarContainer.appendChild(progressBar);
                     cell.appendChild(progressBarContainer);
                     percentageLabel.textContent = `${percentage.toFixed(2)}%`;
