@@ -30,7 +30,7 @@
             const inputTextarea = document.getElementById('inputTextarea');
             const title = titleInput.value.trim();
             let lines = inputTextarea.value.split('\n');
-	    lines.push(`${lines.length}/${lines.length} Completed. 🏆`)
+	    lines.push(`${lines.length-1}/${lines.length-1} Completed. 🏆`)
 	    // remove empty lines
 	    lines = lines.filter((el)=>{
 		return el.trim() != ""

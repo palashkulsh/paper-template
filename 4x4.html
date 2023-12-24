@@ -30,7 +30,8 @@
             const inputTextarea = document.getElementById('inputTextarea');
             const title = titleInput.value.trim();
             let lines = inputTextarea.value.split('\n');
-            lines.push(`${lines.length}/${lines.length} Completed. 🏆`);
+	    //because last slide is of completion certificate
+            lines.push(`${lines.length-1}/${lines.length-1} Completed. 🏆`);
             // remove empty lines
             lines = lines.filter((el) => {
                 return el.trim() != "";
@@ -59,13 +60,16 @@
                     const lineLabel = document.createElement('div');
                     lineLabel.className = 'lineLabel';
                     const line = lines[i + j] || '';
+		    if(line==''){
+			continue;
+		    }
                     lineLabel.textContent = line.trim();
                     cell.appendChild(lineLabel);
 
                     // Add current number/total count in the top right corner with padding
                     const countLabel = document.createElement('div');
                     countLabel.className = 'countLabel';
-                    countLabel.textContent = `${i + j + 1}/${lines.length}`;
+                    countLabel.textContent = `${i + j }/${lines.length-1}`;
                     cell.appendChild(countLabel);
 
                     // Add percentage value with bordered progress bar
@@ -77,7 +81,7 @@
                     percentageLabel.className = 'percentageLabel';
                     const progressBar = document.createElement('div');
                     progressBar.className = 'progressBar';
-                    const percentage = ((i + j + 1) / lines.length) * 100;
+                    const percentage = ((i + j) / (lines.length-1)) * 100;
                     progressBar.style.width = `${(percentage) > 0 && percentage<101 ? percentage : 0}%`; // Adjust width
                     progressBarContainer.appendChild(progressBar);
                     cell.appendChild(progressBarContainer);
@@ -91,8 +95,8 @@
                 margin: 0,
                 filename: 'divided_page.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                html2canvas: { scale: 1 , scrollY:0},
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
             };
 
             // Use html2pdf to generate and download the PDF
@@ -103,25 +107,26 @@
     <style>
         body {
             margin: 0;
-            padding: 20px;
+            padding: 0px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
         table {
-            width: 210mm; /* A4 width */
-            height: 297mm; /* A4 height divided by 4 rows */
+            width: 297mm; /* A4 width */
+            height: 210mm; /* A4 height divided by 4 rows */
             border-collapse: collapse;
         }
 
         .pdfCell {
             position: relative;
-            width: 25%;
-            height: 74.23mm; /* Adjust the height as needed */
+            width: 75mm;
+            height: 52.45mm; /* Adjust the height as needed */
             border: 1px solid black;
             text-align: left;
-            padding: 10px;
+            padding: 30px;
+	    padding-left: 50px;
             box-sizing: border-box;
         }
 
@@ -137,7 +142,7 @@
 
         .countLabel, .percentageLabel {
             position: absolute;
-            font-size: 12px;
+            font-size: 18px;
             color: #555;
         }
 
@@ -150,9 +155,10 @@
             height: 20px; /* Increased height */
             border: 1px solid #000;
             position: absolute;
-            bottom: 34px; /* Adjusted bottom position */
-            left: 10px; /* Adjusted left position */
-            width: calc(100% - 20px); /* Adjusted width */
+            bottom: 15%; /* Adjusted bottom position */
+            left: 50px; /* Adjusted left position */
+            width: 68%; /* Adjusted width */
+	    margin-bottom: 3px;
         }
 
         .progressBar {
@@ -162,10 +168,10 @@
 
         .percentageLabel {
             position: absolute;
-            bottom: 15px;
+            bottom: 5%;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 12px;
+            font-size: 18px;
             color: #555;
         }
     </style>
